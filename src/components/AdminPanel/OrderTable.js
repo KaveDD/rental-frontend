@@ -55,8 +55,8 @@ function OrderTable() {
                                 <td>{order.pickupLocation}</td>
                                 <td>{(new Date(order.pickupDate)).toLocaleString()}</td>
                                 <td>{(new Date(order.returnDate)).toLocaleString()}</td>
-                                <td>{order.packageType}</td>
                                 <td>{order.vehicleType}</td>
+                                <td>{order.packageType}</td>
                                 <td>
                                     <Link to={`/orders/update/${order._id}`}>
                                         <IconButton color="secondary" variant="outlined" aria-label="add an alarm">
