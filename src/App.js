@@ -1,6 +1,7 @@
 import React from 'react';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
+import TopHeader from './components/Header/TopHeader';
 import Home from './components/Home/Home';
 import Landingpage from './Screens/LandingPage/Landingpage';
 import { BrowserRouter, Route, Switch } from "react-router-dom"
@@ -19,6 +20,7 @@ import EditOrder from './components/EditOrder.js/EditOrder';
 const App = () =>(
   document.title = "Route Master",
   <BrowserRouter>
+      <TopHeader/>
       <Header />
       <main>
       <Switch>

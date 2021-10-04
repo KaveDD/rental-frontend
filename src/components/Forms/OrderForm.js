@@ -14,6 +14,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
+import FormHelperText from '@mui/material/FormHelperText';
 
 
 function OrderForm({order_id , formvalues , btnText}) {
@@ -30,6 +31,8 @@ function OrderForm({order_id , formvalues , btnText}) {
         packageType : '', 
       });
 
+      const [ validationErr , setValidationErr ] = useState(null) 
+
       const [numOfDays , setNumOfdays] = useState(undefined)
     
       const handleChange = (field , newValue) => {
@@ -37,6 +40,17 @@ function OrderForm({order_id , formvalues , btnText}) {
       };
 
       const handleSubmit = async () => {
+
+        const { pickupLocation, pickupDate, pickupTime, returnDate, returnTime, vehicleType, packageType } = values
+
+        if( !pickupLocation || !pickupDate || !pickupTime || !returnDate || !returnTime || !vehicleType || !packageType ){
+            setValidationErr('All the fields are required.')
+            return
+        }
+
+        setValidationErr(null)
+
+
           if(order_id) {
 
             try {
@@ -56,30 +70,38 @@ function OrderForm({order_id , formvalues , btnText}) {
             
 
           }else{ 
-            const createRes =  await fetch(`http://localhost:8092/api/orders/create`, {
-                method : 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body : JSON.stringify(formattedValues) 
-            })
 
-            if(createRes.status === 400) {
+                try {
 
-                const parseRes = await createRes.json()
-                console.log(parseRes)
-                alert(parseRes.error)
+                    const createRes =  await fetch(`http://localhost:8092/api/orders/create`, {
+                    method : 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body : JSON.stringify(formattedValues) 
+                })
 
-            }else{
-                setValues({
-                    pickupLocation :'',
-                    pickupDate: null,
-                    pickupTime : null ,
-                    returnDate : null ,
-                    returnTime : null ,
-                    vehicleType : '',
-                    packageType : '', 
-                  })
+                if(createRes.status === 400) {
+
+                    const parseRes = await createRes.json()
+                    console.log(parseRes)
+                    alert(parseRes.error)
+
+                }else{
+                    setValues({
+                        pickupLocation :'',
+                        pickupDate: null,
+                        pickupTime : null ,
+                        returnDate : null ,
+                        returnTime : null ,
+                        vehicleType : '',
+                        packageType : '', 
+                    })
+                }
+                    
+            } catch (error) {
+                console.log(error)
+                setValidationErr("Backend Error")
             }
 
           }
@@ -284,6 +306,7 @@ function OrderForm({order_id , formvalues , btnText}) {
                         </FormControl>
                     </div>
                 </Box>
+                {validationErr && <FormHelperText error={true} sx={{ mx: 1, fontSize : '1.3rem' , my : 1}}>{validationErr}</FormHelperText>}
                 <Box sx= {{ mt : 6 , width: '85%' , display : 'flex' , justifyContent: 'flex-end'}}>
                     <Button variant="contained" size="large" sx={{ mr: 3, backgroundColor: '#158CBA'}} onClick={handleSubmit} >
                         {btnText}

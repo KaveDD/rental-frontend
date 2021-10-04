@@ -10,10 +10,19 @@ import { Link } from 'react-router-dom'
 function OrderTable() {
 
     const [data, setData] = useState([])
+    const [err , setErr] = useState(null)
 
     async function fetchData() {
-        const data = await fetch('http://localhost:8092/api/orders')
-        setData(await data.json())
+
+        try {
+            const data = await fetch('http://localhost:8092/api/orders')
+            setData(await data.json())
+
+        } catch (error) {
+            setErr(error)
+        }
+
+        
     }
 
     useEffect(() => {       
@@ -75,6 +84,7 @@ function OrderTable() {
                     </tbody>
                 </Table>
                 </Box>
+                {err && <p style={{ color : 'red' }}>Failed to fetch Data</p>}
             </Container>
         </div>
     )
