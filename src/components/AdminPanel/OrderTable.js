@@ -6,6 +6,13 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Link } from 'react-router-dom'
+import jspdf from 'jspdf'
+
+import "jspdf-autotable"
+
+
+
+import img from '../../Images/Logo.png';
 
 function OrderTable() {
 
@@ -39,6 +46,39 @@ function OrderTable() {
         fetchData()
     }
 
+    const generatePDF = tickets => {
+
+
+
+        const doc = new jspdf();
+        const tableColumn = ["Order ID", "Pickup Location", "Pickup Date and Time", "Return Date and Time", "Vehicle Type", "Package Type"];
+        const tableRows = [];
+        const date = Date().split(" ");
+        const dateStr = date[1] + "-" + date[2] + "-" + date[3];
+
+        tickets.map(ticket => {
+            const ticketData = [
+                ticket._id,
+                ticket.pickupLocation,
+                ticket.pickupDate,
+                ticket.returnDate,
+                ticket.vehicleType,
+                ticket.packageType,
+            ];
+
+            tableRows.push(ticketData);
+
+        })
+
+        doc.text("Route Master", 70, 8).setFontSize(13);
+        doc.text("Order Detail Report", 14, 16).setFontSize(13);
+        doc.text(`Report Genarated Date - ${dateStr}`, 14, 23);
+        //right down width height
+        doc.addImage(img, 'JPEG', 170, 8, 25, 25);
+        doc.autoTable(tableColumn, tableRows, { styles: { fontSize: 8, }, startY:35});
+        doc.save("Order Details Report.pdf");
+    };
+
     return (
         <div>
             <Container>
@@ -46,6 +86,11 @@ function OrderTable() {
                 <Typography variant="h4" gutterBottom component="div" sx={{ textAlign: 'center' , mb : 5}}>
                     Order Details
                 </Typography>
+                <div class="buttonn">
+
+                    <button type="button" class="btn btn-secondary btn-sm" onClick={() => generatePDF(data)} >Generate Report</button> <br></br>
+
+                </div>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
