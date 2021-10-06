@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 import FormHelperText from '@mui/material/FormHelperText';
+import Snackbar from '@mui/material/Snackbar';
 
 
 function OrderForm({order_id , formvalues , btnText}) {
@@ -30,6 +31,13 @@ function OrderForm({order_id , formvalues , btnText}) {
         vehicleType : '',
         packageType : '', 
       });
+
+      const [ snackbar, setSnackbar] = useState(false)
+      
+    
+      const handleClose = () => {
+        setSnackbar( false);
+      };
 
       const [ validationErr , setValidationErr ] = useState(null) 
 
@@ -61,8 +69,12 @@ function OrderForm({order_id , formvalues , btnText}) {
                     },
                     body : JSON.stringify(formattedValues) 
                 })
-              
-                history.goBack();
+
+                setSnackbar(true)
+                setTimeout(() =>history.goBack(), 2000
+                )
+                
+                
 
             } catch (error) {
                 console.log(error)
@@ -97,6 +109,7 @@ function OrderForm({order_id , formvalues , btnText}) {
                         vehicleType : '',
                         packageType : '', 
                     })
+                    setSnackbar(true)
                 }
                     
             } catch (error) {
@@ -318,6 +331,13 @@ function OrderForm({order_id , formvalues , btnText}) {
             </CardContent>
 
             </Card>
+            <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={snackbar}
+        onClose={handleClose}
+        message="Order Submitted!"
+        autoHideDuration={1500}
+      />
         </div>
     )
 }
