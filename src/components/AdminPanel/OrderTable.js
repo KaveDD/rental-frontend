@@ -13,11 +13,17 @@ import "jspdf-autotable"
 
 
 import img from '../../Images/Logo.png';
+import Snackbar from '@mui/material/Snackbar';
 
 function OrderTable() {
 
     const [data, setData] = useState([])
     const [err , setErr] = useState(null)
+    const [ snackbar, setSnackbar] = useState(false)
+
+    const handleClose = () => {
+        setSnackbar( false);
+      };
 
     async function fetchData() {
 
@@ -43,7 +49,10 @@ function OrderTable() {
             method : 'DELETE'
         })
 
+
         fetchData()
+        setSnackbar(true)
+
     }
 
     const generatePDF = tickets => {
@@ -131,6 +140,13 @@ function OrderTable() {
                 </Box>
                 {err && <p style={{ color : 'red' }}>Failed to fetch Data</p>}
             </Container>
+            <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={snackbar}
+        onClose={handleClose}
+        message="Order Deleted!"
+        autoHideDuration={1500}
+      />
         </div>
     )
 }
